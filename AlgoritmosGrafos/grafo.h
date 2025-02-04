@@ -3,10 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+
+#include <graphviz/cgraph.h>
+#include <graphviz/gvc.h>
 
 // Estrutura para representar uma aresta
 typedef struct {
@@ -27,6 +27,12 @@ typedef struct {
     No** listaAdj;
 } Grafo;
 
-
+No* criarNo(int destino, int peso);
+Grafo* criarGrafo(int numVertices, int orientado);
+void adicionarAresta(Grafo* grafo, int origem, int destino, int peso);
+void liberarGrafo(Grafo* grafo);
+void imprimirGrafo(Grafo* grafo);
+Grafo* carregarGrafo(const char* caminhoArquivo);
+void gerarDOT(Grafo* grafo, const char* nomeArquivo);
 
 #endif

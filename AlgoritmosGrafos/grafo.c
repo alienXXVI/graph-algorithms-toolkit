@@ -65,7 +65,7 @@ void liberarGrafo(Grafo* grafo) {
 void imprimirGrafo(Grafo* grafo) {
     for (int i = 0; i < grafo->numVertices; i++) {
         No* atual = grafo->listaAdj[i];
-        printf("Vértice %d:", i);
+        printf("Vertice %d:", i);
         while (atual != NULL) {
             printf(" -> %d (peso %d)", atual->aresta.destino, atual->aresta.peso);
             atual = atual->proximo;
@@ -74,18 +74,37 @@ void imprimirGrafo(Grafo* grafo) {
     }
 }
 
-int main() {
-    Grafo* grafo = criarGrafo(5, 1); // Grafo orientado com 5 vértices
-    adicionarAresta(grafo, 0, 1, 11);
-    adicionarAresta(grafo, 0, 2, -4);
-    adicionarAresta(grafo, 1, 3, -5);
-    adicionarAresta(grafo, 2, 4, 7);
-    adicionarAresta(grafo, 3, 0, 2);
-    adicionarAresta(grafo, 3, 2, 8);
-    adicionarAresta(grafo, 4, 2, 19);
+// Função para carregar o grafo a partir de um arquivo de texto
+Grafo* carregarGrafo(const char* caminhoArquivo) {
+    FILE* arquivo = fopen(caminhoArquivo, "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return NULL;
+    }
 
-    imprimirGrafo(grafo);
+    // Ler a primeira linha para verificar se o grafo é orientado
+    char linha[100];
+    fgets(linha, sizeof(linha), arquivo);
+    int orientado = (strstr(linha, "orientado=sim") != NULL) ? 1 : 0;
 
-    liberarGrafo(grafo);
-    return 0;
+    // Ler a segunda linha para obter o número de vértices
+    fgets(linha, sizeof(linha), arquivo);
+    int numVertices;
+    sscanf(linha, "V=%d", &numVertices);
+
+    // Criar o grafo
+    Grafo* grafo = criarGrafo(numVertices, orientado);
+
+    // Ler as arestas
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        int origem, destino, peso;
+        if (sscanf(linha, "(%d,%d):%d", &origem, &destino, &peso) == 3) {
+            adicionarAresta(grafo, origem, destino, peso);
+        } else {
+            printf("Formato de aresta invalido: %s\n", linha);
+        }
+    }
+
+    fclose(arquivo);
+    return grafo;
 }
