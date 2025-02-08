@@ -1,6 +1,11 @@
-#include "grafo.h"
+#include "../headers/grafo.h"
 
-// Função para criar um novo nó na lista de adjacências
+// Cria um novo nó na lista de adjacências de um grafo.
+// entradas: 
+//   - destino: vértice de destino da aresta.
+//   - peso: peso da aresta associada ao nó.
+// saídas: 
+//   - Retorna um ponteiro para o novo nó criado.
 No* criarNo(int destino, int peso) {
     No* novoNo = (No*)malloc(sizeof(No));
     novoNo->aresta.destino = destino;
@@ -9,7 +14,12 @@ No* criarNo(int destino, int peso) {
     return novoNo;
 }
 
-// Função para criar um grafo com um número específico de vértices
+// Cria um grafo com um número específico de vértices, podendo ser orientado ou não.
+// entradas: 
+//   - numVertices: número total de vértices no grafo.
+//   - orientado: indica se o grafo é orientado (1 para sim, 0 para não).
+// saídas: 
+//   - Retorna um ponteiro para a estrutura do grafo inicializada.
 Grafo* criarGrafo(int numVertices, int orientado) {
     Grafo* grafo = (Grafo*)malloc(sizeof(Grafo));
     grafo->numVertices = numVertices;
@@ -23,7 +33,14 @@ Grafo* criarGrafo(int numVertices, int orientado) {
     return grafo;
 }
 
-// Função para adicionar uma aresta ao grafo
+// Adiciona uma aresta ao grafo, com inserção ordenada na lista de adjacências.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo.
+//   - origem: vértice de origem da aresta.
+//   - destino: vértice de destino da aresta.
+//   - peso: peso associado à aresta.
+// saídas: 
+//   - Nenhuma (modifica a estrutura do grafo adicionando a aresta).
 void adicionarAresta(Grafo* grafo, int origem, int destino, int peso) {
     No* novoNo = criarNo(destino, peso);
 
@@ -47,7 +64,11 @@ void adicionarAresta(Grafo* grafo, int origem, int destino, int peso) {
     }
 }
 
-// Função para liberar a memória alocada para o grafo
+// Libera a memória alocada para a estrutura do grafo e suas listas de adjacências.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo a ser liberado.
+// saídas: 
+//   - Nenhuma (memória desalocada).
 void liberarGrafo(Grafo* grafo) {
     for (int i = 0; i < grafo->numVertices; i++) {
         No* atual = grafo->listaAdj[i];
@@ -61,7 +82,11 @@ void liberarGrafo(Grafo* grafo) {
     free(grafo);
 }
 
-// Função para imprimir o grafo (para debug)
+// Imprime a lista de adjacências do grafo, exibindo seus vértices e conexões.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo a ser impresso.
+// saídas: 
+//   - Nenhuma (exibe a estrutura do grafo no console).
 void imprimirGrafo(Grafo* grafo) {
     for (int i = 0; i < grafo->numVertices; i++) {
         No* atual = grafo->listaAdj[i];
@@ -74,7 +99,11 @@ void imprimirGrafo(Grafo* grafo) {
     }
 }
 
-// Função para carregar o grafo a partir de um arquivo de texto
+// Carrega um grafo a partir de um arquivo de texto, lendo vértices e arestas formatadas.
+// entradas: 
+//   - caminhoArquivo: caminho do arquivo contendo os dados do grafo.
+// saídas: 
+//   - Retorna um ponteiro para a estrutura do grafo carregado a partir do arquivo.
 Grafo* carregarGrafo(const char* caminhoArquivo) {
     FILE* arquivo = fopen(caminhoArquivo, "r");
     if (arquivo == NULL) {

@@ -1,4 +1,4 @@
-#include "graphviz.h"
+#include "../headers/algoritmos.h"
 
 void gerarDOT(Grafo* grafo, const char* nomeArquivo) {
     FILE* arquivoDOT = fopen(nomeArquivo, "w");
