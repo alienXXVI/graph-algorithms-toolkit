@@ -28,7 +28,7 @@ typedef struct {
 
 
 // -------------------------------------
-// -- Funções da fila --
+// -- FILA --
 
 // Cria e inicializa uma fila com a capacidade especificada.
 // entradas: 
@@ -68,7 +68,7 @@ void liberarFila(Fila* fila);
 
 
 // -------------------------------------
-// -- Funções do DFS --
+// -- BUSCA EM PROFUNDIDADE --
 
 // Executa a busca em profundidade (DFS) de forma recursiva a partir de um vértice.
 // entradas: 
@@ -89,7 +89,7 @@ void buscaProfundidade(Grafo* grafo, int origem);
 
 
 // -------------------------------------
-// -- Funções do BFS --
+// -- BUSCA EM LARGURA --
 
 // Executa a busca em largura (BFS) a partir de um vértice de origem.
 // entradas: 
@@ -101,15 +101,38 @@ void buscaLargura(Grafo* grafo, int origem);
 
 
 // -------------------------------------
-// -- Funções do Bellman-Ford --
+// -- BELLMAN-FORD --
 
+// Inicializa as distâncias e predecessores para o algoritmo de Bellman-Ford.
+// entradas: 
+//   - caminhos: vetor de estruturas para armazenar as menores distâncias e predecessores.
+//   - numVertices: número total de vértices no grafo.
+//   - origem: vértice de origem para o cálculo das menores distâncias.
+// saídas: 
+//   - O vetor de caminhos é atualizado com a distância inicial infinita para todos os vértices, 
+//     exceto a origem, que recebe distância 0.
 void inicializarCaminhos(Caminho* caminhos, int numVertices, int origem);
+
+// Imprime o caminho mínimo do vértice de origem até um destino específico.
+// entradas: 
+//   - caminhos: vetor de estruturas contendo as informações de predecessores dos vértices.
+//   - destino: índice do vértice cujo caminho será impresso.
+// saídas: 
+//   - Exibe na saída padrão o caminho mínimo do vértice de origem até o destino.
 void imprimirCaminho(Caminho* caminhos, int destino);
+
+// Implementa o algoritmo de Bellman-Ford para encontrar os menores caminhos a partir de um vértice de origem.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo direcionado a ser processado.
+//   - origem: índice do vértice de origem para o cálculo dos caminhos mínimos.
+// saídas: 
+//   - Exibe na saída padrão os menores caminhos a partir da origem para cada vértice do grafo.
+//   - Se houver um ciclo de peso negativo, exibe uma mensagem de erro e encerra a execução.
 void bellmanFord(Grafo* grafo, int origem);
 
 
 // -------------------------------------
-// -- Funções do conjunto união-busca --
+// -- CONJUNTO UNIÃO-BUSCA --
 
 // Cria e inicializa um conjunto para a estrutura união-busca (disjoint-set).
 // entradas: 
@@ -144,7 +167,7 @@ void liberarConjunto(Conjunto* conjunto);
 
 
 // -------------------------------------
-// -- Funções de Kruskal --
+// -- KRUSKAL --
 
 // Compara duas arestas pelo peso, utilizada na ordenação com qsort.
 // entradas: 
@@ -175,14 +198,59 @@ void gerarImagemKruskal(Grafo* grafo, ArestaOrdenada* AGM, int numArestas, const
 
 
 // -------------------------------------
-// -- Funções de Componentes Fortemente Conexas --
+// -- COMPONENTES CONEXAS --
 
+// Função auxiliar para busca em profundidade (DFS)
+// entradas: 
+//   - grafo: grafo no qual a busca em profundidade será realizada.
+//   - vertice: vértice inicial para a busca.
+//   - visitado: array que indica quais vértices já foram visitados.
+//   - componente: array para armazenar os vértices da componente conexa.
+//   - tamanho: variável para manter o tamanho da componente conexa.
+void dfs(Grafo* grafo, int vertice, bool* visitado, int* componente, int* tamanho);
+
+// Função para encontrar e exibir componentes conexas
+// entradas: 
+//   - grafo: grafo no qual as componentes conexas serão encontradas.
+// saídas: 
+//   - Exibe as componentes conexas no grafo.
+void encontrarComponentesConexas(Grafo* grafo);
+
+
+// -------------------------------------
+// -- COMPONENTES FORTEMENTE CONEXAS --
+
+// Função auxiliar para empilhar vértices na primeira DFS
+// entradas: 
+//   - grafo: grafo no qual a busca em profundidade será realizada.
+//   - v: vértice atual da busca.
+//   - visitado: array que indica quais vértices já foram visitados.
+//   - pilha: array que armazenará os vértices em ordem pós-ordem.
+//   - topo: variável que indica o topo da pilha.
 void dfsPilha(Grafo* grafo, int v, bool visitado[], int pilha[], int* topo);
 
+// Função auxiliar para DFS no grafo transposto
+// entradas: 
+//   - grafoT: grafo transposto para realizar a DFS.
+//   - v: vértice atual da DFS.
+//   - visitado: array que indica quais vértices já foram visitados.
+//   - componente: array para armazenar os vértices da componente fortemente conexa.
+//   - tamanho: variável para manter o tamanho da componente fortemente conexa.
 void dfsComponente(Grafo* grafoT, int v, bool visitado[], int componente[], int* tamanho);
 
+// Função para encontrar as componentes fortemente conexas e imprimi-las
+// entradas: 
+//   - grafo: grafo direcionado onde as componentes fortemente conexas serão encontradas.
+// saídas: 
+//   - Exibe as componentes fortemente conexas e gera uma imagem do grafo com as componentes.
 void encontrarCFC(Grafo* grafo);
 
+// Função para gerar imagem do grafo com cores por componente
+// entradas: 
+//   - grafo: grafo que contém as componentes fortemente conexas.
+//   - nomeArquivo: nome do arquivo onde a imagem será salva.
+// saídas: 
+//   - Gera uma imagem do grafo com as componentes fortemente conexas coloridas.
 void gerarImagemCFC(Grafo* grafo, const char* nomeArquivo);
 
 

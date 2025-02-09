@@ -4,7 +4,7 @@
 #define OUTPUT_DIR "./output/"
 
 // -------------------------------------
-// -- Funções da fila --
+// -- FILA --
 
 // Cria e inicializa uma fila com a capacidade especificada.
 // entradas: 
@@ -60,7 +60,7 @@ void liberarFila(Fila* fila) {
 
 
 // -------------------------------------
-// -- Funções do DFS --
+// -- BUSCA EM PROFUNDIDADE --
 
 // Executa a busca em profundidade (DFS) de forma recursiva a partir de um vértice.
 // entradas: 
@@ -108,7 +108,7 @@ void buscaProfundidade(Grafo* grafo, int origem) {
 
 
 // -------------------------------------
-// -- Funções do BFS --
+// -- BUSCA EM LARGURA --
 
 // Executa a busca em largura (BFS) a partir de um vértice de origem.
 // entradas: 
@@ -154,9 +154,16 @@ void buscaLargura(Grafo* grafo, int origem) {
 
 
 // -------------------------------------
-// -- Funções do Bellman-Ford --
+// -- BELLMAN-FORD --
 
-// Função para inicializar as distâncias e predecessores
+// Inicializa as distâncias e predecessores para o algoritmo de Bellman-Ford.
+// entradas: 
+//   - caminhos: vetor de estruturas para armazenar as menores distâncias e predecessores.
+//   - numVertices: número total de vértices no grafo.
+//   - origem: vértice de origem para o cálculo das menores distâncias.
+// saídas: 
+//   - O vetor de caminhos é atualizado com a distância inicial infinita para todos os vértices, 
+//     exceto a origem, que recebe distância 0.
 void inicializarCaminhos(Caminho* caminhos, int numVertices, int origem) {
     for (int i = 0; i < numVertices; i++) {
         caminhos[i].distancia = INT_MAX;
@@ -165,7 +172,12 @@ void inicializarCaminhos(Caminho* caminhos, int numVertices, int origem) {
     caminhos[origem].distancia = 0;
 }
 
-// Função para imprimir o caminho mínimo
+// Imprime o caminho mínimo do vértice de origem até um destino específico.
+// entradas: 
+//   - caminhos: vetor de estruturas contendo as informações de predecessores dos vértices.
+//   - destino: índice do vértice cujo caminho será impresso.
+// saídas: 
+//   - Exibe na saída padrão o caminho mínimo do vértice de origem até o destino.
 void imprimirCaminho(Caminho* caminhos, int destino) {
     if (caminhos[destino].predecessor == -1) {
         printf("%d", destino);
@@ -175,11 +187,17 @@ void imprimirCaminho(Caminho* caminhos, int destino) {
     printf(" - %d", destino);
 }
 
-// Implementação do algoritmo de Bellman-Ford
+// Implementa o algoritmo de Bellman-Ford para encontrar os menores caminhos a partir de um vértice de origem.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo direcionado a ser processado.
+//   - origem: índice do vértice de origem para o cálculo dos caminhos mínimos.
+// saídas: 
+//   - Exibe na saída padrão os menores caminhos a partir da origem para cada vértice do grafo.
+//   - Se houver um ciclo de peso negativo, exibe uma mensagem de erro e encerra a execução.
 void bellmanFord(Grafo* grafo, int origem) {
     // Verifica se o grafo é orientado
     if (!grafo->orientado) {
-        printf("Erro: O algoritmo de Bellman-Ford só pode ser aplicado a grafos orientados.\n");
+        printf("Erro: O algoritmo de Bellman-Ford so pode ser aplicado a grafos orientados.\n");
         return;
     }
 
@@ -213,7 +231,7 @@ void bellmanFord(Grafo* grafo, int origem) {
             int peso = no->aresta.peso;
 
             if (caminhos[u].distancia != INT_MAX && caminhos[u].distancia + peso < caminhos[v].distancia) {
-                printf("Erro: O grafo contém um ciclo de peso negativo.\n");
+                printf("Erro: O grafo contem um ciclo de peso negativo.\n");
                 return;
             }
             no = no->proximo;
@@ -236,7 +254,7 @@ void bellmanFord(Grafo* grafo, int origem) {
 
 
 // -------------------------------------
-// -- Funções do conjunto união-busca --
+// -- CONJUNTO UNIÃO-BUSCA --
 
 // Cria e inicializa um conjunto para a estrutura união-busca (disjoint-set).
 // entradas: 
@@ -299,7 +317,7 @@ void liberarConjunto(Conjunto* conjunto) {
 
 
 // -------------------------------------
-// -- Funções de Kruskal --
+// -- KRUSKAL --
 
 // Compara duas arestas pelo peso, utilizada na ordenação com qsort.
 // entradas: 
@@ -319,7 +337,7 @@ int compararArestas(const void* a, const void* b) {
 //   - Nenhuma (exibe a AGM no console e gera um arquivo DOT e PNG para visualização).
 void kruskal(Grafo* grafo) {
     if (grafo->orientado) {
-        printf("Erro: O algoritmo de Kruskal não pode ser aplicado a grafos orientados.\n");
+        printf("Erro: O algoritmo de Kruskal nao pode ser aplicado a grafos orientados.\n");
         return;
     }
     
@@ -335,7 +353,7 @@ void kruskal(Grafo* grafo) {
     }
 
     if (numArestas < grafo->numVertices - 1) {
-        printf("Erro: O grafo não possui arestas suficientes para formar uma Arvore Geradora Minima.\n");
+        printf("Erro: O grafo nao possui arestas suficientes para formar uma Arvore Geradora Minima.\n");
         return;
     }
 
@@ -443,9 +461,100 @@ void gerarImagemKruskal(Grafo* grafo, ArestaOrdenada* AGM, int numArestas, const
 
 
 // -------------------------------------
-// -- Funções de Componentes Fortemente Conexas --
+// -- COMPONENTES CONEXAS --
+
+// Função auxiliar para busca em profundidade (DFS)
+// entradas: 
+//   - grafo: grafo no qual a busca em profundidade será realizada.
+//   - vertice: vértice inicial para a busca.
+//   - visitado: array que indica quais vértices já foram visitados.
+//   - componente: array para armazenar os vértices da componente conexa.
+//   - tamanho: variável para manter o tamanho da componente conexa.
+void dfs(Grafo* grafo, int vertice, bool* visitado, int* componente, int* tamanho) {
+    visitado[vertice] = true;
+    componente[*tamanho] = vertice;
+    (*tamanho)++;
+    
+    No* atual = grafo->listaAdj[vertice];
+    while (atual) {
+        int v = atual->aresta.destino;
+        if (!visitado[v]) {
+            dfs(grafo, v, visitado, componente, tamanho);
+        }
+        atual = atual->proximo;
+    }
+}
+
+// Função para encontrar e exibir componentes conexas
+// entradas: 
+//   - grafo: grafo no qual as componentes conexas serão encontradas.
+// saídas: 
+//   - Exibe as componentes conexas no grafo.
+void encontrarComponentesConexas(Grafo* grafo) {
+    // Verifica se o grafo é não orientado
+    if (grafo->orientado) {
+        printf("Erro: O algoritmo de componentes conexas so pode ser aplicado a grafos nao orientados.\n");
+        return;
+    }
+    
+    int numVertices = grafo->numVertices;
+    bool visitado[numVertices];
+    for (int i = 0; i < numVertices; i++) {
+        visitado[i] = false;
+    }
+    
+    // Armazena as componentes conexas
+    int* componentes[numVertices];
+    int tamanhos[numVertices];
+    int numComponentes = 0;
+    
+    // Executa DFS para cada componente conexa
+    for (int i = 0; i < numVertices; i++) {
+        if (!visitado[i]) {
+            componentes[numComponentes] = (int*)malloc(numVertices * sizeof(int));
+            tamanhos[numComponentes] = 0;
+            dfs(grafo, i, visitado, componentes[numComponentes], &tamanhos[numComponentes]);
+            numComponentes++;
+        }
+    }
+    
+    // Ordena as componentes por tamanho decrescente
+    for (int i = 0; i < numComponentes - 1; i++) {
+        for (int j = i + 1; j < numComponentes; j++) {
+            if (tamanhos[i] < tamanhos[j]) {
+                int* tempComp = componentes[i];
+                int tempTam = tamanhos[i];
+                componentes[i] = componentes[j];
+                tamanhos[i] = tamanhos[j];
+                componentes[j] = tempComp;
+                tamanhos[j] = tempTam;
+            }
+        }
+    }
+    
+    // Exibe as componentes
+    for (int i = 0; i < numComponentes; i++) {
+        printf("Componente %d: ", i + 1);
+        for (int j = 0; j < tamanhos[i]; j++) {
+            printf("%d", componentes[i][j]);
+            if (j < tamanhos[i] - 1) printf(", ");
+        }
+        printf("\n");
+        free(componentes[i]);
+    }
+}
+
+
+// -------------------------------------
+// -- COMPONENTES FORTEMENTE CONEXAS --
 
 // Função auxiliar para empilhar vértices na primeira DFS
+// entradas: 
+//   - grafo: grafo no qual a busca em profundidade será realizada.
+//   - v: vértice atual da busca.
+//   - visitado: array que indica quais vértices já foram visitados.
+//   - pilha: array que armazenará os vértices em ordem pós-ordem.
+//   - topo: variável que indica o topo da pilha.
 void dfsPilha(Grafo* grafo, int v, bool visitado[], int pilha[], int* topo) {
     visitado[v] = true;
     
@@ -458,6 +567,12 @@ void dfsPilha(Grafo* grafo, int v, bool visitado[], int pilha[], int* topo) {
 }
 
 // Função auxiliar para DFS no grafo transposto
+// entradas: 
+//   - grafoT: grafo transposto para realizar a DFS.
+//   - v: vértice atual da DFS.
+//   - visitado: array que indica quais vértices já foram visitados.
+//   - componente: array para armazenar os vértices da componente fortemente conexa.
+//   - tamanho: variável para manter o tamanho da componente fortemente conexa.
 void dfsComponente(Grafo* grafoT, int v, bool visitado[], int componente[], int* tamanho) {
     visitado[v] = true;
     componente[(*tamanho)++] = v;
@@ -470,6 +585,10 @@ void dfsComponente(Grafo* grafoT, int v, bool visitado[], int componente[], int*
 }
 
 // Função para encontrar as componentes fortemente conexas e imprimi-las
+// entradas: 
+//   - grafo: grafo direcionado onde as componentes fortemente conexas serão encontradas.
+// saídas: 
+//   - Exibe as componentes fortemente conexas e gera uma imagem do grafo com as componentes.
 void encontrarCFC(Grafo* grafo) {
     if (!grafo->orientado) {
         printf("Erro: O algoritmo de componentes fortemente conexas so pode ser aplicado a grafos direcionados.\n");
@@ -525,6 +644,11 @@ void encontrarCFC(Grafo* grafo) {
 }
 
 // Função para gerar imagem do grafo com cores por componente
+// entradas: 
+//   - grafo: grafo que contém as componentes fortemente conexas.
+//   - nomeArquivo: nome do arquivo onde a imagem será salva.
+// saídas: 
+//   - Gera uma imagem do grafo com as componentes fortemente conexas coloridas.
 void gerarImagemCFC(Grafo* grafo, const char* nomeArquivo) {
     char caminhoDot[256];
     sprintf(caminhoDot, "%sgrafoCFC.dot", OUTPUT_DIR);
