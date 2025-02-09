@@ -3,6 +3,237 @@
 
 #define OUTPUT_DIR "./output/"
 
+// -------------------------------------
+// -- Funções da fila --
+
+// Cria e inicializa uma fila com a capacidade especificada.
+// entradas: 
+//   - capacidade: número máximo de elementos que a fila pode armazenar.
+// saídas: 
+//   - Retorna um ponteiro para a estrutura de fila criada.
+Fila* criarFila(int capacidade) {
+    Fila* fila = (Fila*)malloc(sizeof(Fila));
+    fila->dados = (int*)malloc(capacidade * sizeof(int));
+    fila->frente = 0;
+    fila->tras = 0;
+    fila->capacidade = capacidade;
+    return fila;
+}
+
+// Verifica se a fila está vazia.
+// entradas: 
+//   - fila: ponteiro para a estrutura da fila.
+// saídas: 
+//   - Retorna 1 se a fila estiver vazia, 0 caso contrário.
+int filaVazia(Fila* fila) {
+    return fila->frente == fila->tras;
+}
+
+// Insere um elemento no final da fila.
+// entradas: 
+//   - fila: ponteiro para a estrutura da fila.
+//   - valor: elemento a ser inserido na fila.
+// saídas: 
+//   - Nenhuma (a fila é modificada diretamente).
+void enfileirar(Fila* fila, int valor) {
+    fila->dados[fila->tras++] = valor;
+}
+
+// Remove e retorna o elemento na frente da fila.
+// entradas: 
+//   - fila: ponteiro para a estrutura da fila.
+// saídas: 
+//   - Retorna o elemento removido da fila.
+int desenfileirar(Fila* fila) {
+    return fila->dados[fila->frente++];
+}
+
+// Libera a memória alocada para a fila.
+// entradas: 
+//   - fila: ponteiro para a estrutura da fila a ser liberada.
+// saídas: 
+//   - Nenhuma (a memória é liberada diretamente).
+void liberarFila(Fila* fila) {
+    free(fila->dados);
+    free(fila);
+}
+
+
+// -------------------------------------
+// -- Funções do DFS --
+
+// Executa a busca em profundidade (DFS) de forma recursiva a partir de um vértice.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo.
+//   - vertice: índice do vértice atual na busca.
+//   - visitado: vetor que armazena se um vértice já foi visitado.
+// saídas: 
+//   - Nenhuma (os vértices são visitados e impressos durante a execução).
+void dfsRecursivo(Grafo* grafo, int vertice, int* visitado) {
+    visitado[vertice] = 1;
+    printf("%d - ", vertice);
+    
+    No* adjacente = grafo->listaAdj[vertice];
+    while (adjacente) {
+        if (!visitado[adjacente->aresta.destino]) {
+            dfsRecursivo(grafo, adjacente->aresta.destino, visitado);
+        }
+        adjacente = adjacente->proximo;
+    }
+}
+
+// Executa a busca em profundidade (DFS) a partir de um vértice de origem.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo.
+//   - origem: vértice de início da busca.
+// saídas: 
+//   - Nenhuma (os vértices visitados são impressos na tela).
+void buscaProfundidade(Grafo* grafo, int origem) {
+    if (!grafo || origem >= grafo->numVertices || origem < 0) {
+        printf("Erro: Grafo invalido ou vertice de origem fora do intervalo.\n");
+        return;
+    }
+    
+    int* visitado = (int*)calloc(grafo->numVertices, sizeof(int));
+    if (!visitado) {
+        printf("Erro: Falha na alocacao de memoria.\n");
+        return;
+    }
+    
+    printf("DFS: ");
+    dfsRecursivo(grafo, origem, visitado);
+    printf("\n");
+    free(visitado);
+}
+
+
+// -------------------------------------
+// -- Funções do BFS --
+
+// Executa a busca em largura (BFS) a partir de um vértice de origem.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo.
+//   - origem: vértice de início da busca.
+// saídas: 
+//   - Nenhuma (os vértices visitados são impressos na tela).
+void buscaLargura(Grafo* grafo, int origem) {
+    if (!grafo || origem >= grafo->numVertices || origem < 0) {
+        printf("Erro: Grafo invalido ou vertice de origem fora do intervalo.\n");
+        return;
+    }
+    
+    int* visitado = (int*)calloc(grafo->numVertices, sizeof(int));
+    if (!visitado) {
+        printf("Erro: Falha na alocacao de memoria.\n");
+        return;
+    }
+    
+    printf("BFS: ");
+    Fila* fila = criarFila(grafo->numVertices);
+    enfileirar(fila, origem);
+    visitado[origem] = 1;
+    
+    while (!filaVazia(fila)) {
+        int vertice = desenfileirar(fila);
+        printf("%d - ", vertice);
+        
+        No* adjacente = grafo->listaAdj[vertice];
+        while (adjacente) {
+            if (!visitado[adjacente->aresta.destino]) {
+                enfileirar(fila, adjacente->aresta.destino);
+                visitado[adjacente->aresta.destino] = 1;
+            }
+            adjacente = adjacente->proximo;
+        }
+    }
+    
+    printf("\n");
+    liberarFila(fila);
+    free(visitado);
+}
+
+
+// -------------------------------------
+// -- Funções do Bellman-Ford --
+
+// Função para inicializar as distâncias e predecessores
+void inicializarCaminhos(Caminho* caminhos, int numVertices, int origem) {
+    for (int i = 0; i < numVertices; i++) {
+        caminhos[i].distancia = INT_MAX;
+        caminhos[i].predecessor = -1;
+    }
+    caminhos[origem].distancia = 0;
+}
+
+// Função para imprimir o caminho mínimo
+void imprimirCaminho(Caminho* caminhos, int destino) {
+    if (caminhos[destino].predecessor == -1) {
+        printf("%d", destino);
+        return;
+    }
+    imprimirCaminho(caminhos, caminhos[destino].predecessor);
+    printf(" - %d", destino);
+}
+
+// Implementação do algoritmo de Bellman-Ford
+void bellmanFord(Grafo* grafo, int origem) {
+    // Verifica se o grafo é orientado
+    if (!grafo->orientado) {
+        printf("Erro: O algoritmo de Bellman-Ford só pode ser aplicado a grafos orientados.\n");
+        return;
+    }
+
+    int numVertices = grafo->numVertices;
+    Caminho caminhos[numVertices];
+
+    inicializarCaminhos(caminhos, numVertices, origem);
+
+    // Relaxamento das arestas (numVertices - 1 vezes)
+    for (int i = 0; i < numVertices - 1; i++) {
+        for (int u = 0; u < numVertices; u++) {
+            No* no = grafo->listaAdj[u];
+            while (no) {
+                int v = no->aresta.destino;
+                int peso = no->aresta.peso;
+
+                if (caminhos[u].distancia != INT_MAX && caminhos[u].distancia + peso < caminhos[v].distancia) {
+                    caminhos[v].distancia = caminhos[u].distancia + peso;
+                    caminhos[v].predecessor = u;
+                }
+                no = no->proximo;
+            }
+        }
+    }
+
+    // Verificação de ciclos de peso negativo
+    for (int u = 0; u < numVertices; u++) {
+        No* no = grafo->listaAdj[u];
+        while (no) {
+            int v = no->aresta.destino;
+            int peso = no->aresta.peso;
+
+            if (caminhos[u].distancia != INT_MAX && caminhos[u].distancia + peso < caminhos[v].distancia) {
+                printf("Erro: O grafo contém um ciclo de peso negativo.\n");
+                return;
+            }
+            no = no->proximo;
+        }
+    }
+
+    // Impressão dos menores caminhos
+    printf("Origem: %d\n", origem);
+    for (int i = 0; i < numVertices; i++) {
+        printf("Destino: %d ", i);
+        if (caminhos[i].distancia == INT_MAX) {
+            printf("dist.: Infinito (Sem caminho)\n");
+        } else {
+            printf("dist.: %d caminho: ", caminhos[i].distancia);
+            imprimirCaminho(caminhos, i);
+            printf("\n");
+        }
+    }
+}
+
 
 // -------------------------------------
 // -- Funções do conjunto união-busca --

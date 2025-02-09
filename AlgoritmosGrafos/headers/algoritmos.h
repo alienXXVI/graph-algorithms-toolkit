@@ -14,6 +14,99 @@ typedef struct {
     int numVertices;
 } Conjunto;
 
+// Implementação de uma fila simples
+typedef struct {
+    int *dados;
+    int frente, tras, capacidade;
+} Fila;
+
+// Estrutura auxiliar para armazenar os caminhos
+typedef struct {
+    int distancia;
+    int predecessor;
+} Caminho;
+
+
+// -------------------------------------
+// -- Funções da fila --
+
+// Cria e inicializa uma fila com a capacidade especificada.
+// entradas: 
+//   - capacidade: número máximo de elementos que a fila pode armazenar.
+// saídas: 
+//   - Retorna um ponteiro para a estrutura de fila criada.
+Fila* criarFila(int capacidade);
+
+// Verifica se a fila está vazia.
+// entradas: 
+//   - fila: ponteiro para a estrutura da fila.
+// saídas: 
+//   - Retorna 1 se a fila estiver vazia, 0 caso contrário.
+int filaVazia(Fila* fila);
+
+// Insere um elemento no final da fila.
+// entradas: 
+//   - fila: ponteiro para a estrutura da fila.
+//   - valor: elemento a ser inserido na fila.
+// saídas: 
+//   - Nenhuma (a fila é modificada diretamente).
+void enfileirar(Fila* fila, int valor);
+
+// Remove e retorna o elemento na frente da fila.
+// entradas: 
+//   - fila: ponteiro para a estrutura da fila.
+// saídas: 
+//   - Retorna o elemento removido da fila.
+int desenfileirar(Fila* fila);
+
+// Libera a memória alocada para a fila.
+// entradas: 
+//   - fila: ponteiro para a estrutura da fila a ser liberada.
+// saídas: 
+//   - Nenhuma (a memória é liberada diretamente).
+void liberarFila(Fila* fila);
+
+
+// -------------------------------------
+// -- Funções do DFS --
+
+// Executa a busca em profundidade (DFS) de forma recursiva a partir de um vértice.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo.
+//   - vertice: índice do vértice atual na busca.
+//   - visitado: vetor que armazena se um vértice já foi visitado.
+// saídas: 
+//   - Nenhuma (os vértices são visitados e impressos durante a execução).
+void dfsRecursivo(Grafo* grafo, int vertice, int* visitado);
+
+// Executa a busca em profundidade (DFS) a partir de um vértice de origem.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo.
+//   - origem: vértice de início da busca.
+// saídas: 
+//   - Nenhuma (os vértices visitados são impressos na tela).
+void buscaProfundidade(Grafo* grafo, int origem);
+
+
+// -------------------------------------
+// -- Funções do BFS --
+
+// Executa a busca em largura (BFS) a partir de um vértice de origem.
+// entradas: 
+//   - grafo: ponteiro para a estrutura do grafo.
+//   - origem: vértice de início da busca.
+// saídas: 
+//   - Nenhuma (os vértices visitados são impressos na tela).
+void buscaLargura(Grafo* grafo, int origem);
+
+
+// -------------------------------------
+// -- Funções do Bellman-Ford --
+
+void inicializarCaminhos(Caminho* caminhos, int numVertices, int origem);
+void imprimirCaminho(Caminho* caminhos, int destino);
+void bellmanFord(Grafo* grafo, int origem);
+
 
 // -------------------------------------
 // -- Funções do conjunto união-busca --

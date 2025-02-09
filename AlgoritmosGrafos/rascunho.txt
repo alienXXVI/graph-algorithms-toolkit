@@ -43,3 +43,30 @@ int main() {
     liberarGrafo(grafo);
     return 0;
 }
+
+DFS e BFS
+#include "./headers/algoritmos.h"
+
+int main() {
+    // Carregar o grafo a partir de um arquivo
+    Grafo* grafo = carregarGrafo("./input/grafo.txt");
+    if (grafo == NULL) {
+        return 1; // Encerrar o programa se o grafo não puder ser carregado
+    }
+
+    // Imprimir o grafo para verificar o carregamento
+    printf("Grafo Original:\n");
+    imprimirGrafo(grafo);
+
+    // Testar Busca em Profundidade (DFS)
+    printf("\nBusca em Profundidade (DFS) a partir do vertice %d:\n", 3);
+    buscaProfundidade(grafo, 3);
+
+    // Testar Busca em Largura (BFS)
+    printf("\nBusca em Largura (BFS) a partir do vertice %d:\n", 3);
+    buscaLargura(grafo, 3);
+
+    // Liberar a memória alocada para o grafo
+    liberarGrafo(grafo);
+    return 0;
+}

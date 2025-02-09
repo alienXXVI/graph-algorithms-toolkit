@@ -11,9 +11,8 @@ int main() {
     printf("Grafo Original:\n");
     imprimirGrafo(grafo);
 
-    // Determinar e exibir as componentes fortemente conexas
-    printf("\nArvore Geradora Minima (Kruskal):\n");
-    kruskal(grafo);
+    printf("\nBellman-Ford a partir do vertice %d:\n", 1);
+    bellmanFord(grafo, 2);
 
     // Liberar a memória alocada para o grafo
     liberarGrafo(grafo);
