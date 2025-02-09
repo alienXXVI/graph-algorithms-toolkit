@@ -137,3 +137,85 @@ Grafo* carregarGrafo(const char* caminhoArquivo) {
     fclose(arquivo);
     return grafo;
 }
+
+// Gera o arquivo DOT representando o grafo, contendo a definição dos vértices e arestas.
+// entradas:
+//   - grafo: ponteiro para a estrutura do grafo a ser representado.
+//   - nomeArquivo: nome do arquivo de saída para o arquivo DOT.
+// saídas:
+//   - Nenhuma. O arquivo DOT é gerado no caminho especificado.
+void gerarDOT(Grafo* grafo, const char* nomeArquivo) {
+    // Abre o arquivo DOT para gravação na pasta .\output
+    FILE* arquivoDOT = fopen(nomeArquivo, "w");
+    if (arquivoDOT == NULL) {
+        printf("Erro ao criar o arquivo DOT.\n");
+        return;
+    }
+
+    // Escrever o cabeçalho do arquivo DOT
+    if (grafo->orientado) {
+        fprintf(arquivoDOT, "digraph G {\n");
+    } else {
+        fprintf(arquivoDOT, "graph G {\n");
+    }
+
+    // Escrever os vértices
+    for (int i = 0; i < grafo->numVertices; i++) {
+        fprintf(arquivoDOT, "  %d;\n", i);
+    }
+
+    // Escrever as arestas
+    for (int i = 0; i < grafo->numVertices; i++) {
+        No* atual = grafo->listaAdj[i];
+        while (atual != NULL) {
+            if (grafo->orientado || i < atual->aresta.destino) { // Evitar duplicação em grafos não orientados
+                fprintf(arquivoDOT, "  %d %s %d [label=\"%d\"];\n",
+                        i,
+                        grafo->orientado ? "->" : "--",
+                        atual->aresta.destino,
+                        atual->aresta.peso);
+            }
+            atual = atual->proximo;
+        }
+    }
+
+    fprintf(arquivoDOT, "}\n");
+    fclose(arquivoDOT);
+}
+
+// Função para gerar a imagem do grafo no formato PNG usando o Graphviz
+// entradas:
+//   - grafo: ponteiro para a estrutura do grafo a ser representado.
+//   - caminhoArquivo: caminho onde a imagem PNG gerada será salva (sem a extensão).
+// saídas:
+//   - Nenhuma. A imagem PNG é gerada e salva no caminho especificado.
+void gerarImagemGrafo(Grafo* grafo, const char* caminhoArquivo) {
+    // Criar nome base para o arquivo (sem diretórios)
+    const char* nomeBase = strrchr(caminhoArquivo, '\\');
+    if (nomeBase == NULL) {
+        nomeBase = caminhoArquivo;  // Se não houver barra invertida, usa o nome direto
+    } else {
+        nomeBase++;  // Pular a barra invertida
+    }
+
+    // Adicionar a pasta de saída
+    char nomeArquivoDOT[200];
+    snprintf(nomeArquivoDOT, sizeof(nomeArquivoDOT), ".\\output\\%s.dot", nomeBase);
+
+    // Gerar o arquivo DOT
+    gerarDOT(grafo, nomeArquivoDOT);
+
+    // Gerar nome para o arquivo .png
+    char nomeImagem[200];
+    snprintf(nomeImagem, sizeof(nomeImagem), ".\\output\\%s.png", nomeBase);
+
+    // Gerar a imagem .png com o Graphviz
+    char comando[512];
+    snprintf(comando, sizeof(comando), "dot -Tpng %s -o %s", nomeArquivoDOT, nomeImagem);
+    int resultado = system(comando);
+    if (resultado != 0) {
+        printf("Erro ao gerar a imagem.\n");
+    } else {
+        printf("Imagem gerada com sucesso: %s\n", nomeImagem);
+    }
+}

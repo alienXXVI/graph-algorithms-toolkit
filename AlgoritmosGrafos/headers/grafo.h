@@ -78,4 +78,20 @@ void imprimirGrafo(Grafo* grafo);
 //   - Retorna um ponteiro para a estrutura do grafo carregado a partir do arquivo.
 Grafo* carregarGrafo(const char* caminhoArquivo);
 
+// Gera o arquivo DOT representando o grafo, contendo a definição dos vértices e arestas.
+// entradas:
+//   - grafo: ponteiro para a estrutura do grafo a ser representado.
+//   - nomeArquivo: nome do arquivo de saída para o arquivo DOT.
+// saídas:
+//   - Nenhuma. O arquivo DOT é gerado no caminho especificado.
+void gerarDOT(Grafo* grafo, const char* nomeArquivo);
+
+// Função para gerar a imagem do grafo no formato PNG usando o Graphviz
+// entradas:
+//   - grafo: ponteiro para a estrutura do grafo a ser representado.
+//   - caminhoArquivo: caminho onde a imagem PNG gerada será salva (sem a extensão).
+// saídas:
+//   - Nenhuma. A imagem PNG é gerada e salva no caminho especificado.
+void gerarImagemGrafo(Grafo* grafo, const char* caminhoArquivo);
+
 #endif

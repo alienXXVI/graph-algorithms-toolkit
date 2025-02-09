@@ -9,6 +9,7 @@ void exibirMenu() {
     printf("5. Executar Busca em Largura (BFS)\n");
     printf("6. Executar Bellman-Ford\n");
     printf("7. Executar Componentes Conexas\n");
+    printf("8. Desenhar Grafo\n");
     printf("0. Sair\n");
 }
 
@@ -93,6 +94,15 @@ int main() {
                 if (grafo != NULL) {
                     printf("\nComponentes Conexas:\n");
                     encontrarComponentesConexas(grafo);
+                } else {
+                    printf("Carregue o grafo primeiro.\n");
+                }
+                break;
+            
+            case 8: // Desenhar Grafo
+                if (grafo != NULL) {
+                    printf("Desenhando o grafo...\n");
+                    gerarImagemGrafo(grafo, caminho);
                 } else {
                     printf("Carregue o grafo primeiro.\n");
                 }
