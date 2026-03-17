@@ -1,90 +1,60 @@
-# Algoritmos em Grafos
+# Graph Algorithms Toolkit
 
-Este projeto implementa uma série de algoritmos clássicos em grafos, como busca em profundidade (DFS), busca em largura (BFS), Bellman-Ford, Kruskal, componentes conexas e componentes fortemente conexas. O programa também permite a visualização do grafo e das estruturas geradas pelos algoritmos, como a Árvore Geradora Mínima (AGM) e as componentes fortemente conexas.
+## Description
+This project is a modular C-based toolkit designed to process, analyze, and visualize complex graph structures. It supports both directed and undirected graphs, handling edge weights and providing rigorous implementations of classical algorithms for pathfinding, connectivity, and minimum spanning trees.
 
-<br>
+## Technologies
+-   **C11**
+-   **MinGW/GCC**
+-   **Graphviz API** (libcgraph, libgvc)
+-   **DOT Language**
 
-## Estrutura do Projeto
+## Features
+-   **Traversal Algorithms**: Full implementations of Breadth-First Search (BFS) and Depth-First Search (DFS).
+-   **Pathfinding**: Bellman-Ford algorithm to find shortest paths and detect negative cycles in directed graphs.
+-   **Minimum Spanning Tree**: Kruskal’s algorithm using Disjoint-Set Union (Union-Find) with path compression and rank optimization.
+-   **Connectivity Analysis**: Identification of Connected Components (undirected) and Strongly Connected Components (directed).
+-   **Visual Export**: Automatic generation of PNG images highlighting specific algorithm results, such as MST edges in red or colored strongly connected components.
 
-O projeto é composto pelos seguintes arquivos:
+## How to Run
 
-- **`grafo.h`**: Contém as definições das estruturas de dados e funções relacionadas à manipulação de grafos.
-- **`algoritmos.h`**: Contém as definições das estruturas e funções para os algoritmos implementados.
-- **`grafo.c`** e **`algoritmos.h`**: Contém as implementações das definições.
-- **`main.c`**: Contém a função principal e o menu interativo para execução dos algoritmos.
+### Prerequisites
 
-<br>
+-   **GCC Compiler** installed (e.g., MinGW on Windows).
+-   **Graphviz** installed and added to your system path.
 
-## Funcionalidades
+### Compiling
 
-O programa oferece as seguintes funcionalidades:
+Navigate to the project root and run the compilation command (adjust paths if your Graphviz installation differs):
 
-1. **Carregar Grafo**: Carrega um grafo a partir de um arquivo de texto.
-2. **Executar Kruskal**: Encontra a Árvore Geradora Mínima (AGM) usando o algoritmo de Kruskal.
-3. **Executar Componentes Fortemente Conexas (CFC)**: Identifica e exibe as componentes fortemente conexas de um grafo direcionado.
-4. **Executar Busca em Profundidade (DFS)**: Realiza uma busca em profundidade a partir de um vértice especificado.
-5. **Executar Busca em Largura (BFS)**: Realiza uma busca em largura a partir de um vértice especificado.
-6. **Executar Bellman-Ford**: Calcula os menores caminhos a partir de um vértice de origem usando o algoritmo de Bellman-Ford.
-7. **Executar Componentes Conexas**: Identifica e exibe as componentes conexas de um grafo não direcionado.
-8. **Desenhar Grafo**: Gera uma imagem do grafo usando a biblioteca Graphviz.
-9. **Sair**: Encerra o programa.
+    gcc -o main.exe sources/*.c main.c -I"C:\Program Files\Graphviz\include" -L"C:\Program Files\Graphviz\lib" -lcgraph -lgvc
 
-<br>
+### Execution
+Run the executable to access the interactive menu:
 
-## Compilar e Executar
+    .\main.exe
 
-### Pré-requisitos
+## Project Structure
 
-- **Graphviz**: O projeto utiliza a biblioteca Graphviz para gerar visualizações dos grafos, deve estar instalada no sistema.
-- **GCC**: Compilador C para compilar o código.
+-   **`headers/grafo.h`**: Core graph data structures (Adjacency List) and basic manipulation functions.
+-   **`headers/algoritmos.h`**: Interface for the search, pathfinding, and optimization algorithms.
+-   **`sources/grafo.c`**: Implementation of graph loading, memory management, and DOT file generation.
+-   **`sources/algoritmos.c`**: Implementation of BFS, DFS, Bellman-Ford, Kruskal, and SCC logic.
+-   **`main.c`**: The interactive CLI menu for user interaction.
+-   **`input/`**: Example graph text files using a specific `(origin, destination):weight` syntax.
+- 
+## What I Learned
 
-<br>
+-   **Memory Management**: Handled complex pointer arithmetic and nested data structures (linked lists within arrays) to represent adjacency lists.
+-   **Disjoint-Set Optimization**: Improved Kruskal's performance by implementing path compression and union-by-rank.
+-   **Transposed Graphs**: Used graph transposition as a prerequisite for identifying strongly connected components.
+-   **External API Integration**: Interfaced directly with the Graphviz C libraries to automate technical drawing.
 
-### Compilação
 
-Para compilar o projeto, é utilizado o seguinte comando:
+## Future Improvements
+-   **Dijkstra's Algorithm**: Add support for Dijkstra using a Priority Queue (Min-Heap) for faster pathfinding on graphs without negative weights.
+-   **Topological Sorting**: Implement sorting for Directed Acyclic Graphs (DAGs).
+-   **Dynamic Input**: Allow users to add vertices and edges manually through the CLI menu.
 
-```bash
-gcc -o main.exe sources/*.c main.c -I"C:\Program Files\Graphviz\include" -L"C:\Program Files\Graphviz\lib" -lcgraph -lgvc
-```
 
-Deve-se substituir o caminho "C:\Program Files\Graphviz\include" e "C:\Program Files\Graphviz\lib" pelos caminhos corretos da instalação do Graphviz no sistema.
 
-<br>
-
-### Execução
-
-Após a compilação, é possível executar o programa com o comando:
-
-```bash
-.\main.exe
-```
-
-<br>
-
-## Menu Interativo
-
-O programa apresenta um menu interativo onde se pode escolher qual algoritmo executar. Basta seguir as instruções exibidas no console.
-
-<br>
-
-### Exemplo de Arquivo de Grafo
-O grafo pode ser carregado a partir de um arquivo de texto com o seguinte formato:
-
-```bash
-orientado=sim
-V=5
-(0,1):11
-(0,2):-4
-(1,3):-5
-(2,4):7
-(3,0):2
-(3,2):8
-(4,2):19
-```
-<br>
-
-### Visualização do Grafo
-O programa gera arquivos DOT e imagens PNG para visualização do grafo e das estruturas geradas pelos algoritmos. As imagens são geradas usando a biblioteca Graphviz.
-
-<br>
