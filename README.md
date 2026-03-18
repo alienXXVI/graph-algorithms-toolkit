@@ -42,7 +42,7 @@ Run the executable to access the interactive menu:
 -   **`sources/algoritmos.c`**: Implementation of BFS, DFS, Bellman-Ford, Kruskal, and SCC logic.
 -   **`main.c`**: The interactive CLI menu for user interaction.
 -   **`input/`**: Example graph text files using a specific `(origin, destination):weight` syntax.
-- 
+
 ## What I Learned
 
 -   **Memory Management**: Handled complex pointer arithmetic and nested data structures (linked lists within arrays) to represent adjacency lists.
